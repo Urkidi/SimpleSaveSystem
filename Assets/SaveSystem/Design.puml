@@ -1,0 +1,50 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+skinparam linetype ortho
+interface ISaveSystem {
+    + void Load();
+    + void Save();
+}
+
+class SaveSystem{
+    + void Load();
+    + void Save();
+}
+
+class MainSave<Serializable>{
+
+}
+
+interface IEncrypter<T>{
+    +string Encrypt(T save)
+    +T Decrypt(string data) 
+} 
+
+interface IDataWriter<T>{
+    + void WriteData(T save)
+}
+
+interface IDataReader<T>{
+    + T ReadData()
+}
+
+class SaveEncrypter <IEncrypter<MainSave>>{
+ + string Encrypt(MainSave save)
+ + MainSave Decrypt(string save)
+}
+
+class JsonLocalReadWriter <IDataWriter<string>>{
+ + void Write()
+}
+
+SaveSystem -> MainSave
+IEncrypter <.. SaveSystem
+IDataWriter <.. SaveSystem
+IDataReader <.. SaveSystem
+IDataReader <|..JsonLocalReadWriter
+IEncrypter <|.. SaveEncrypter 
+ISaveSystem <|.. SaveSystem
+
+
+@enduml
