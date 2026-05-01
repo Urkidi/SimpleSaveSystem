@@ -1,0 +1,64 @@
+@startuml
+
+skinparam linetype ortho
+
+interface ISaveService<T> {
+    + T Save {get;}
+    + void Load();
+    + void Save();
+}
+
+class T<Serializable>{
+}
+
+interface IEncryptionService{
+    +byte[] Encrypt(byte[] rawData)
+    +byte[] Decrypt(byte[] data) 
+} 
+
+interface IDataWriteService{
+    + void WriteData(byte[] data, string uri)
+}
+
+interface IDataReadService{
+    + byte[] ReadData(string uri)
+}
+
+interface ISerializationService<T>{
+    + byte[] Serialize(T data)
+    + T DeSerialize(byte[] rawData)
+}
+interface IHashService{
+    + byte[] HashData(byte[] data)
+    + bool ValidateHash(byte[] data, byte[] expectedHash)
+}
+
+interface ISaveIOService<T>{
+    + IList<string> GetSaveIds { get; }
+    + T Load(string id) 
+    + void Save(string id, T data)
+}
+
+interface IUriProvider{
+    string MetaDataUri{get;}
+    string SaveDataUri{get;}
+}
+
+SaveService -> T
+SaveIOService ..> IEncryptionService
+SaveIOService ..> IDataWriteService
+SaveIOService ..> IDataReadService
+IDataReadService <|... LocalRWService
+IDataWriteService <|.. LocalRWService
+IEncryptionService <|.. AESEncryptionService 
+IEncyptionKeyProvider <.. AESEncryptionService
+SaveIOService ..> IHashService
+IHashService <|.. SHA256HashService
+SaveIOService ..> ISerializationService
+ISerializationService <|.. JsonSerializationService
+ISaveIOService <|.. SaveIOService
+SaveIOService ..> IUriProvider
+IUriProvider <|.. UriProvider 
+ISaveIOService <.. SaveService
+ISaveService <|.. SaveService
+@enduml
