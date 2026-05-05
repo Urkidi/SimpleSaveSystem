@@ -1,9 +1,8 @@
 {
-    "name": "SimpleSaveSystem.Example",
+    "name": "SaveSystem.Defaults",
     "rootNamespace": "",
     "references": [
-        "GUID:90a934711039476e89403b0cdd7a0a7b",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "GUID:90a934711039476e89403b0cdd7a0a7b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

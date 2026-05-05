@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SimpleSaveSystem
+namespace SimpleSaveSystem.Core
 {
     public class SaveSystem<T> : ISaveSystem<T>
     {

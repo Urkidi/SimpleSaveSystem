@@ -1,6 +1,6 @@
 using System;
 
-namespace SimpleSaveSystem
+namespace SimpleSaveSystem.Core.Data
 {
     [Serializable]
     public class SaveSlotMetaData

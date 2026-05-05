@@ -1,7 +1,8 @@
 using System.Linq;
 using System.Security.Cryptography;
+using SimpleSaveSystem.Services;
 
-namespace SimpleSaveSystem.Services
+namespace SimpleSaveSystem.Defaults
 {
     public class Sha256HashService : IHashService
     {

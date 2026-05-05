@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SimpleSaveSystem
+namespace SimpleSaveSystem.Core
 {
     public interface ISaveIOService<T>
     {

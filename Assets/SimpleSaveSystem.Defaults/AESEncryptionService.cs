@@ -1,4 +1,6 @@
-namespace SimpleSaveSystem.Services
+using SimpleSaveSystem.Services;
+
+namespace SimpleSaveSystem.Defaults
 {
     public class AesEncryptionService : IEncryptionService
     {

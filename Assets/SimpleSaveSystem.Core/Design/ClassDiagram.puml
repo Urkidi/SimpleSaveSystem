@@ -2,10 +2,12 @@
 
 skinparam linetype ortho
 
-interface ISaveService<T> {
-    + T Save {get;}
-    + void Load();
-    + void Save();
+interface ISaveSystem<T> {
+    +T SaveData { get;}
+    +List<string> SaveGameIds { get; }
+    +void SaveCurrentSave();
+    +void LoadSave(string id);
+    +void CreateSave();
 }
 
 class T<Serializable>{
@@ -34,9 +36,11 @@ interface IHashService{
 }
 
 interface ISaveIOService<T>{
-    + IList<string> GetSaveIds { get; }
-    + T Load(string id) 
-    + void Save(string id, T data)
+   +List<string> SaveSlotIds { get; }
+   +string LastSavedId { get; }
+   +bool TryLoadCreate(string id, out T save);
+   +bool TryLoad(string id, out T save);
+   +void Save(string id, T saveData);
 }
 
 interface IUriProvider{
@@ -44,21 +48,14 @@ interface IUriProvider{
     string SaveDataUri{get;}
 }
 
-SaveService -> T
 SaveIOService ..> IEncryptionService
 SaveIOService ..> IDataWriteService
 SaveIOService ..> IDataReadService
-IDataReadService <|... LocalRWService
-IDataWriteService <|.. LocalRWService
-IEncryptionService <|.. AESEncryptionService 
-IEncyptionKeyProvider <.. AESEncryptionService
 SaveIOService ..> IHashService
-IHashService <|.. SHA256HashService
-SaveIOService ..> ISerializationService
-ISerializationService <|.. JsonSerializationService
-ISaveIOService <|.. SaveIOService
 SaveIOService ..> IUriProvider
-IUriProvider <|.. UriProvider 
+SaveIOService ..> ISerializationService
+ISaveIOService <|.. SaveIOService
+SaveService -> T
 ISaveIOService <.. SaveService
-ISaveService <|.. SaveService
+ISaveSystem <|.. SaveService
 @enduml

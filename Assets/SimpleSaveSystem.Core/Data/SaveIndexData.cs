@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SimpleSaveSystem
+namespace SimpleSaveSystem.Core.Data
 {
     [Serializable]
     public class SaveIndexData

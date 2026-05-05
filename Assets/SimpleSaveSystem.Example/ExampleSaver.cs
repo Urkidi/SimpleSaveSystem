@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using SaveSystem.Example.SaveExample;
 using SimpleSaveSystem;
+using SimpleSaveSystem.Core;
+using SimpleSaveSystem.Defaults;
 using SimpleSaveSystem.Services;
 using TMPro;
 using UnityEngine;

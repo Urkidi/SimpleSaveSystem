@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SimpleSaveSystem.Core.Data;
 using SimpleSaveSystem.Services;
 using UnityEngine;
 
-namespace SimpleSaveSystem
+namespace SimpleSaveSystem.Core
 {
     public class SaveIOService<T> : ISaveIOService<T>
     {

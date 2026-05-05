@@ -1,7 +1,8 @@
 using System.Text;
+using SimpleSaveSystem.Services;
 using UnityEngine;
 
-namespace SimpleSaveSystem.Services
+namespace SimpleSaveSystem.Defaults
 {
     public class JsonSerializationService : ISerializationService
     {
@@ -13,6 +14,6 @@ namespace SimpleSaveSystem.Services
         public T Deserialize<T>(byte[] rawData)
         {
             return JsonUtility.FromJson<T>(Encoding.UTF8.GetString(rawData));
-        }
+        } 
     }
 }

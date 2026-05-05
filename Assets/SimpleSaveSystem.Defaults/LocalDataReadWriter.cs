@@ -1,6 +1,7 @@
 using System.IO;
+using SimpleSaveSystem.Services;
 
-namespace SimpleSaveSystem.Services
+namespace SimpleSaveSystem.Defaults
 {
     public class LocalDataReadWriter : IDataReadService, IDataWriteService
     {
