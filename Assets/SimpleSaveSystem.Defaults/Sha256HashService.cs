@@ -22,7 +22,7 @@ namespace SimpleSaveSystem.Defaults
 
             for (int i = 0; i < byteHash.Length; i++)
             {
-                stringBuilder.Append(data[i].ToString("x2"));
+                stringBuilder.Append(byteHash[i].ToString("x2"));
             }
 
             return stringBuilder.ToString();
