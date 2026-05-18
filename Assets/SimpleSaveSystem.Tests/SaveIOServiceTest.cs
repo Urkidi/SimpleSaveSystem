@@ -231,6 +231,21 @@ namespace SimpleSaveSystem.Tests
             _mockDataWriteService.Verify(service => service.WriteData(_metaUri, It.IsAny<byte[]>()), Times.Once);
         }
         
+        [Test]
+        public void TrySave_ExistingSaveId_UpdatesIndexLastSaveId()
+        {
+            SetUpIndexData(1, _nonExistingId);
+            
+            SetUpReadService(true);
+            var saveSystem = CreateSaveSystem();
+            var data = CreateSave("data");
+            
+            Assume.That(saveSystem.LastSavedId, Is.EqualTo(_nonExistingId));
+
+            Assert.That(saveSystem.TrySave(_lastSaveId, data), Is.True);
+            Assert.That(saveSystem.LastSavedId, Is.EqualTo(_lastSaveId));
+        }
+        
         private void SetUpReadService(bool canRead)
         {
             _mockDataReadService.Setup(service => service.TryRead(It.IsAny<string>(), out _dataReadOutput))
