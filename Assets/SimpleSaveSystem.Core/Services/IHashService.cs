@@ -2,7 +2,7 @@ namespace SimpleSaveSystem.Core.Services
 {
     public interface IHashService
     {
-        byte[] HashData(byte[] data);
-        bool VerifyHash(byte[] data, byte[] hash);
+        string GetHash(byte[] data);
+        bool VerifyHash(byte[] data, string hash);
     }
 }

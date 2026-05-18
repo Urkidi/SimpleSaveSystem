@@ -30,7 +30,7 @@ namespace SimpleSaveSystem.Tests
         private byte[] _serializedOutput = { };
 
         private byte[] _encryptedOutput = { };
-        private byte[] _hashedOutput = { };
+        private string _hashedOutput = "";
         private FakeSaveData _saveData = new();
         private FakeSaveData _defaultSaveData = new(){ Value = _defaultValue};
 
@@ -71,7 +71,7 @@ namespace SimpleSaveSystem.Tests
             _mockEncryptionService.Setup(service => service.EncryptData(It.IsAny<byte[]>())).Returns(_encryptedOutput);
             _mockEncryptionService.Setup(service => service.EncryptData(It.IsAny<byte[]>())).Returns(_encryptedOutput);
 
-            _mockHashService.Setup(service => service.HashData(It.IsAny<byte[]>())).Returns(_hashedOutput);
+            _mockHashService.Setup(service => service.GetHash(It.IsAny<byte[]>())).Returns(_hashedOutput);
 
             _stubSaveVersionProvider.SetupGet(provider => provider.Version).Returns(_version);
             _stubUriProvider.SetupGet(provider => provider.SaveDataUri).Returns(_uri);
@@ -254,7 +254,7 @@ namespace SimpleSaveSystem.Tests
 
         private void SetUpHashService(bool canVerify)
         {
-            _mockHashService.Setup(service => service.VerifyHash(It.IsAny<byte[]>(), It.IsAny<byte[]>()))
+            _mockHashService.Setup(service => service.VerifyHash(It.IsAny<byte[]>(), It.IsAny<string>()))
                 .Returns(canVerify);
         }
 

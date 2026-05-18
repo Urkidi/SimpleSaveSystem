@@ -1,6 +1,6 @@
 using System;
 
-namespace SaveSystem.Example.SaveExample
+namespace SimpleSaveSystem.Example.SaveExample
 {
     [Serializable]
     public class ItemSave2

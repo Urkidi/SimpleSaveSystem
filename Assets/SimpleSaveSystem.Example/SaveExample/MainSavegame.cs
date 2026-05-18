@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SaveSystem.Example.SaveExample
+namespace SimpleSaveSystem.Example.SaveExample
 {
     [Serializable]
     public class MainSavegame

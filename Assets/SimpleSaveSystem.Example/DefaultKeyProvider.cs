@@ -1,6 +1,6 @@
-using SimpleSaveSystem.Services;
+using SimpleSaveSystem.Core.Services;
 
-namespace SaveSystem.Example
+namespace SimpleSaveSystem.Example
 {
     public class DefaultKeyProvider : IEncryptionKeyProvider
     {

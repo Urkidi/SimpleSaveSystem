@@ -1,22 +1,31 @@
-using System.Linq;
+using System;
 using System.Security.Cryptography;
+using System.Text;
 using SimpleSaveSystem.Core.Services;
 
 namespace SimpleSaveSystem.Defaults
 {
     public class Sha256HashService : IHashService
     {
-        public byte[] HashData(byte[] data)
+        public bool VerifyHash(byte[] data, string hash)
         {
-            using HashAlgorithm hashAlgorithm = SHA256.Create();
-            return hashAlgorithm.ComputeHash(data);
+            var dataHash = GetHash(data);
+            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+            return comparer.Equals(dataHash, hash);
         }
 
-        public bool VerifyHash(byte[] data, byte[] hash)
+        public string GetHash(byte[] data)
         {
             using HashAlgorithm hashAlgorithm = SHA256.Create();
-            var target = hashAlgorithm.ComputeHash(data);
-            return target.SequenceEqual(hash);
+            var byteHash = hashAlgorithm.ComputeHash(data);
+            var stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < byteHash.Length; i++)
+            {
+                stringBuilder.Append(data[i].ToString("x2"));
+            }
+
+            return stringBuilder.ToString();
         }
     }
 }

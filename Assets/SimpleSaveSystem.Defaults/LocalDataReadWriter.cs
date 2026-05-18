@@ -12,6 +12,10 @@ namespace SimpleSaveSystem.Defaults
 
         public void WriteData(string uri, byte[] data)
         {
+            var path = Path.GetDirectoryName(uri);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            
             File.WriteAllBytes(uri, data);
         }
 

@@ -75,8 +75,7 @@ namespace SimpleSaveSystem.Core
         {
             if (_dataReadService.TryRead(_uriProvider.GetSlotUri(id), out var saveBytes))
             {
-                if (_hashService.VerifyHash(saveBytes,
-                        Encoding.UTF8.GetBytes(_indexData.SaveSlots.First(slot => slot.Id == id).Hash)))
+                if (_hashService.VerifyHash(saveBytes,_indexData.SaveSlots.First(slot => slot.Id == id).Hash))
                 {
                     var decryptedSave = _encryptionService.DecryptData(saveBytes);
                     save = _serializationService.Deserialize<T>(decryptedSave);
@@ -104,10 +103,11 @@ namespace SimpleSaveSystem.Core
                 _dataWriteService.WriteData(_uriProvider.GetSlotUri(id), encryptedSave);
 
                 var slot = _indexData.SaveSlots.First(slot => slot.Id == id);
-                slot.Hash = Encoding.UTF8.GetString(_hashService.HashData(encryptedSave));
+                slot.Hash = _hashService.GetHash(encryptedSave);
                 slot.Version = _saveVersionProvider.Version;
                 slot.LastModified = DateTime.UtcNow;
-
+                
+                _indexData.LastSavedSlotId = id;
                 WriteIndexData();
                 return true;
             }

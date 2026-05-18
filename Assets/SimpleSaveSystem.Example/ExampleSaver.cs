@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using SaveSystem.Example.SaveExample;
-using SimpleSaveSystem;
 using SimpleSaveSystem.Core;
 using SimpleSaveSystem.Defaults;
-using SimpleSaveSystem.Services;
+using SimpleSaveSystem.Example.SaveExample;
 using TMPro;
 using UnityEngine;
 
-namespace SaveSystem.Example
+namespace SimpleSaveSystem.Example
 {
     public class ExampleSaver : MonoBehaviour
     {
@@ -16,7 +14,10 @@ namespace SaveSystem.Example
         private MainSavegame _mainSave;
 
         [SerializeField]
-        private TextMeshProUGUI _textMesh;
+        private TextMeshProUGUI _dataText;
+
+        private SaveDefaultProvider _defaultSaveProvider;
+
         private void Awake()
         {
             _mainSave = new MainSavegame()
@@ -56,9 +57,9 @@ namespace SaveSystem.Example
             var hashService = new Sha256HashService();
             var uriProvider = new DefaultPathProvider();
             var versionProvider = new SaveVersionProvider();
-            var defaultSaveProvider = new SaveDefaultProvider();
+            _defaultSaveProvider = new SaveDefaultProvider();
             
-            var saveService = new SaveIOService<MainSavegame>(dataRW, dataRW,serializationService,encryptionService,hashService, uriProvider, versionProvider, defaultSaveProvider);
+            var saveService = new SaveIOService<MainSavegame>(dataRW, dataRW,serializationService,encryptionService,hashService, uriProvider, versionProvider, _defaultSaveProvider);
             _saveSystem = new SaveSystem<MainSavegame>(saveService);
         }
 
@@ -73,16 +74,26 @@ namespace SaveSystem.Example
             PrintSaveData();
         }
 
-        public void PopulateSaveData()
+        public void AddData()
         {
             _saveSystem.SaveData.Name = _mainSave.Name;
             _saveSystem.SaveData.Items = _mainSave.Items;
             _saveSystem.SaveData.ItemContainer = _mainSave.ItemContainer;
+            PrintSaveData();
+        }
+
+        public void ResetData()
+        {
+            var defaultSave = _defaultSaveProvider.CreateSave();
+            _saveSystem.SaveData.Name = defaultSave.Name;
+            _saveSystem.SaveData.Items = defaultSave.Items;
+            _saveSystem.SaveData.ItemContainer = defaultSave.ItemContainer;
+            PrintSaveData();
         }
 
         public void PrintSaveData()
         {
-            _textMesh.text = JsonUtility.ToJson(_saveSystem.SaveData);
+            _dataText.text = JsonUtility.ToJson(_saveSystem.SaveData);
         }
     }
 }

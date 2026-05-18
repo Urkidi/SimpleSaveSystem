@@ -1,6 +1,6 @@
-using SimpleSaveSystem.Services;
+using SimpleSaveSystem.Core.Services;
 
-namespace SaveSystem.Example.SaveExample
+namespace SimpleSaveSystem.Example.SaveExample
 {
     public class SaveDefaultProvider : IDefaultSaveProvider<MainSavegame>
     {
