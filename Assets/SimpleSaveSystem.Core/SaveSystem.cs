@@ -26,7 +26,7 @@ namespace SimpleSaveSystem.Core
 
         public void SaveCurrentSave()
         {
-            _saveIOService.Save(_currentSaveId, SaveData);
+            _saveIOService.TrySave(_currentSaveId, SaveData);
         }
 
         public void LoadSave(string id)

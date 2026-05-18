@@ -1,5 +1,5 @@
 using System.IO;
-using SimpleSaveSystem.Services;
+using SimpleSaveSystem.Core.Services;
 
 namespace SimpleSaveSystem.Defaults
 {

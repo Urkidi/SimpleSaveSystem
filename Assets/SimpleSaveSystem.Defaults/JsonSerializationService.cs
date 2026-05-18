@@ -1,5 +1,5 @@
 using System.Text;
-using SimpleSaveSystem.Services;
+using SimpleSaveSystem.Core.Services;
 using UnityEngine;
 
 namespace SimpleSaveSystem.Defaults

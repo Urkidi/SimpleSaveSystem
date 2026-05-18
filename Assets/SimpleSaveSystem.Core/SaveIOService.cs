@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SimpleSaveSystem.Core.Data;
-using SimpleSaveSystem.Services;
+using SimpleSaveSystem.Core.Services;
 using UnityEngine;
 
 namespace SimpleSaveSystem.Core
@@ -48,7 +48,6 @@ namespace SimpleSaveSystem.Core
             if (_dataReadService.TryRead(_uriProvider.MetaDataUri, out var metaBytes))
             {
                 _indexData = _serializationService.Deserialize<SaveIndexData>(metaBytes);
-                SaveSlotIds = _indexData.SaveSlots.Select(slot => slot.Id).ToList();
             }
             else
             {
@@ -57,24 +56,21 @@ namespace SimpleSaveSystem.Core
                     SaveSlots = new List<SaveSlotMetaData>()
                 };
             }
+
+            SaveSlotIds = _indexData.SaveSlots.Select(slot => slot.Id).ToList();
         }
 
         public bool TryLoadCreate(string id, out T data)
         {
-            if (SaveSlotIds.Contains(id) && _dataReadService.TryRead(_uriProvider.GetSlotUri(id), out var bytesSave))
+            if (SaveSlotIds.Contains(id))
             {
                 return TryLoad(id, out data);
             }
 
             data = _defaultSaveProvider.CreateSave();
-            _indexData.SaveSlots.Add(new SaveSlotMetaData()
-            {
-                Id = id,
-                Version = _saveVersionProvider.Version
-            });
+            AddSaveIndex(id);
             return true;
         }
-
         public bool TryLoad(string id, out T save)
         {
             if (_dataReadService.TryRead(_uriProvider.GetSlotUri(id), out var saveBytes))
@@ -87,53 +83,54 @@ namespace SimpleSaveSystem.Core
                     return true;
                 }
 
-                Debug.LogError($"Save Error: Hash doesn't match with stored slot hash");
+                Debug.LogError(SaveErrorMessage.HashDoesntMatch);
             }
             else
             {
-                Debug.LogError($"Save Error: Unable to read save on path {_uriProvider.GetSlotUri(id)}");
+                Debug.LogError(String.Format(SaveErrorMessage.UnableToReadPath, _uriProvider.GetSlotUri(id)));
             }
 
             save = default;
             return false;
         }
-        
-        public void Save(string id, T saveData)
+
+        public bool TrySave(string id, T saveData)
         {
             if (SaveSlotIds.Contains(id))
             {
-                try
-                {
-                    var saveBytes = _serializationService.Serialize(saveData);
-                    var encryptedSave = _encryptionService.EncryptData(saveBytes);
+                var saveBytes = _serializationService.Serialize(saveData);
+                var encryptedSave = _encryptionService.EncryptData(saveBytes);
 
-                    _dataWriteService.WriteData(_uriProvider.GetSlotUri(id), encryptedSave);
-                    
-                    var slot = _indexData.SaveSlots.First(slot => slot.Id == id);
-                    slot.Hash = Encoding.UTF8.GetString(_hashService.HashData(encryptedSave));
-                    slot.Version = _saveVersionProvider.Version;
-                    slot.LastModified = DateTime.UtcNow;
-                    
-                    WriteIndexData();
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError(e);
-                }
+                _dataWriteService.WriteData(_uriProvider.GetSlotUri(id), encryptedSave);
+
+                var slot = _indexData.SaveSlots.First(slot => slot.Id == id);
+                slot.Hash = Encoding.UTF8.GetString(_hashService.HashData(encryptedSave));
+                slot.Version = _saveVersionProvider.Version;
+                slot.LastModified = DateTime.UtcNow;
+
+                WriteIndexData();
+                return true;
             }
+
+            Debug.LogError(String.Format(SaveErrorMessage.UnableToFindSaveWithId, id));
+            return false;
         }
+
+        private void AddSaveIndex(string id)
+        {
+            _indexData.SaveSlots.Add(new SaveSlotMetaData()
+            {
+                Id = id,
+                Version = _saveVersionProvider.Version
+            });
+            SaveSlotIds = _indexData.SaveSlots.Select(slot => slot.Id).ToList();
+        }
+
 
         private void WriteIndexData()
         {
-            try
-            {
-                var indexDataBytes = _serializationService.Serialize(_indexData);
-                _dataWriteService.WriteData(_uriProvider.MetaDataUri, indexDataBytes);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
+            var indexDataBytes = _serializationService.Serialize(_indexData);
+            _dataWriteService.WriteData(_uriProvider.MetaDataUri, indexDataBytes);
         }
     }
 }

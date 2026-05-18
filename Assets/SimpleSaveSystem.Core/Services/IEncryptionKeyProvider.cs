@@ -1,4 +1,4 @@
-namespace SimpleSaveSystem.Services
+namespace SimpleSaveSystem.Core.Services
 {
     public interface IEncryptionKeyProvider
     {

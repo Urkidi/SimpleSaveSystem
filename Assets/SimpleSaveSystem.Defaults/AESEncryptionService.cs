@@ -1,4 +1,4 @@
-using SimpleSaveSystem.Services;
+using SimpleSaveSystem.Core.Services;
 
 namespace SimpleSaveSystem.Defaults
 {
