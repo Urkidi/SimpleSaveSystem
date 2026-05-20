@@ -45,14 +45,11 @@ This package requires you to implement the following interfaces.
 ## Package URLs
 
 #### Core package
-```text
-SimpleSaveSystem.Core ```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Core/```
-```
+```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Core/```
+
 #### Defaults package
-```text
-SimpleSaveSystem.Defaults ```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Defaults/```
-```
+```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Defaults/```
+
 #### Example implementation package
-```text
-SimpleSaveSystem.Example ```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Example/```
-```
+
+```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Example/```

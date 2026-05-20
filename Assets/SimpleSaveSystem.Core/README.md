@@ -14,7 +14,7 @@ A lightweight save system for serializable data.
 
 ## Usage
 Create a Serializable class to hold all of your save data.
- 
+
 ```csharp
 [Serializable]
 public class MainSave
@@ -45,14 +45,11 @@ This package requires you to implement the following interfaces.
 ## Package URLs
 
 #### Core package
-```text
-SimpleSaveSystem.Core ```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Core/```
-```
+```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Core/```
+
 #### Defaults package
-```text
-SimpleSaveSystem.Defaults ```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Defaults/```
-```
+```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Defaults/```
+
 #### Example implementation package
-```text
-SimpleSaveSystem.Example ```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Example/```
-```
+
+```https://github.com/Urkidi/SimpleSaveSystem.git?path=/Assets/SimpleSaveSystem.Example/```
