@@ -1,0 +1,23 @@
+{
+  "name": "com.urkidi.simplesavesystem.example",
+  "version": "1.0.0",
+  "displayName": "Simple Save System",
+  "description": "Simple save system implementation example",
+  "unity": "6000.2",
+  "keywords": [
+    "save",
+    "savesystem",
+    "saving",
+    "example",
+    "demo"
+  ],
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.6",
+    "com.urkidi.simplesavesystem.core": "1.0.0",
+    "com.urkidi.simplesavesystem.defaults": "1.0.0"
+  },
+  "author": {
+    "name": "Unai Urkidi",
+    "url": "https://github.com/urkidi"
+  }
+}

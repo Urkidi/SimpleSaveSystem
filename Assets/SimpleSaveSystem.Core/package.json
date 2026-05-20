@@ -1,0 +1,16 @@
+{
+  "name": "com.urkidi.simplesavesystem.core",
+  "version": "1.0.0",
+  "displayName": "Simple Save System",
+  "description": "Simple save system that handles encryption hashing and serialization",
+  "unity": "6000.2",
+  "keywords": [
+    "save",
+    "savesystem",
+    "saving"
+  ],
+  "author": {
+    "name": "Unai Urkidi",
+    "url": "https://github.com/urkidi"
+  }
+}

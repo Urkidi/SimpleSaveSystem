@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SimpleSaveSystem.Core.Data;
 using SimpleSaveSystem.Core.Services;
 using UnityEngine;
@@ -18,7 +17,9 @@ namespace SimpleSaveSystem.Core
         private readonly IUriProvider _uriProvider;
         private readonly ISaveVersionProvider _saveVersionProvider;
         private readonly IDefaultSaveProvider<T> _defaultSaveProvider;
+
         private SaveIndexData _indexData;
+
         public List<string> SaveSlotIds { get; private set; }
         public string LastSavedId => _indexData.LastSavedSlotId;
 
@@ -60,22 +61,23 @@ namespace SimpleSaveSystem.Core
             SaveSlotIds = _indexData.SaveSlots.Select(slot => slot.Id).ToList();
         }
 
-        public bool TryLoadCreate(string id, out T data)
+        public bool TryLoadCreate(string saveId, out T data)
         {
-            if (SaveSlotIds.Contains(id))
+            if (SaveSlotIds.Contains(saveId))
             {
-                return TryLoad(id, out data);
+                return TryLoad(saveId, out data);
             }
 
             data = _defaultSaveProvider.CreateSave();
-            AddSaveIndex(id);
+            AddSaveIndex(saveId);
             return true;
         }
-        public bool TryLoad(string id, out T save)
+
+        public bool TryLoad(string saveId, out T save)
         {
-            if (_dataReadService.TryRead(_uriProvider.GetSlotUri(id), out var saveBytes))
+            if (_dataReadService.TryRead(_uriProvider.GetSlotUri(saveId), out var saveBytes))
             {
-                if (_hashService.VerifyHash(saveBytes,_indexData.SaveSlots.First(slot => slot.Id == id).Hash))
+                if (_hashService.VerifyHash(saveBytes, _indexData.SaveSlots.First(slot => slot.Id == saveId).Hash))
                 {
                     var decryptedSave = _encryptionService.DecryptData(saveBytes);
                     save = _serializationService.Deserialize<T>(decryptedSave);
@@ -86,41 +88,61 @@ namespace SimpleSaveSystem.Core
             }
             else
             {
-                Debug.LogError(String.Format(SaveErrorMessage.UnableToReadPath, _uriProvider.GetSlotUri(id)));
+                Debug.LogError(String.Format(SaveErrorMessage.UnableToReadPath, _uriProvider.GetSlotUri(saveId)));
             }
 
             save = default;
             return false;
         }
 
-        public bool TrySave(string id, T saveData)
+        public bool TrySave(string saveId, T save)
         {
-            if (SaveSlotIds.Contains(id))
+            if (SaveSlotIds.Contains(saveId))
             {
-                var saveBytes = _serializationService.Serialize(saveData);
+                var saveBytes = _serializationService.Serialize(save);
                 var encryptedSave = _encryptionService.EncryptData(saveBytes);
 
-                _dataWriteService.WriteData(_uriProvider.GetSlotUri(id), encryptedSave);
+                _dataWriteService.WriteData(_uriProvider.GetSlotUri(saveId), encryptedSave);
 
-                var slot = _indexData.SaveSlots.First(slot => slot.Id == id);
+                var slot = _indexData.SaveSlots.First(slot => slot.Id == saveId);
                 slot.Hash = _hashService.GetHash(encryptedSave);
                 slot.Version = _saveVersionProvider.Version;
                 slot.LastModified = DateTime.UtcNow;
-                
-                _indexData.LastSavedSlotId = id;
+
+                _indexData.LastSavedSlotId = saveId;
                 WriteIndexData();
                 return true;
             }
 
-            Debug.LogError(String.Format(SaveErrorMessage.UnableToFindSaveWithId, id));
+            Debug.LogError(String.Format(SaveErrorMessage.UnableToFindSaveWithId, saveId));
             return false;
         }
 
-        private void AddSaveIndex(string id)
+        public DateTime GetLastModifiedSaveDate(string saveId)
+        {
+            var lastModified = DateTime.MinValue;
+            
+            if (SaveSlotIds.Contains(saveId))
+                lastModified = _indexData.SaveSlots.First(slot => slot.Id == saveId).LastModified;
+            
+            return lastModified;
+        }
+
+        public string GetSaveVersion(string saveId)
+        {
+            var saveVersion = string.Empty;
+            
+            if (SaveSlotIds.Contains(saveId))
+                saveVersion = _indexData.SaveSlots.First(slot => slot.Id == saveId).Version;
+            
+            return saveVersion;;
+        }
+
+        private void AddSaveIndex(string saveId)
         {
             _indexData.SaveSlots.Add(new SaveSlotMetaData()
             {
-                Id = id,
+                Id = saveId,
                 Version = _saveVersionProvider.Version
             });
             SaveSlotIds = _indexData.SaveSlots.Select(slot => slot.Id).ToList();

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,20 +9,14 @@ namespace SimpleSaveSystem.Core
         private readonly ISaveIOService<T> _saveIOService;
         private string _currentSaveId;
         public T SaveData { get; private set; }
+        public string LastSavedId => _saveIOService.LastSavedId;
         public List<string> SaveGameIds => _saveIOService.SaveSlotIds;
-
+        
         public SaveSystem(ISaveIOService<T> saveIOService)
         {
             _saveIOService = saveIOService;
-            if (SaveGameIds.Count == 0)
-            {
-                LoadCreateSave(SaveGameIds.Count.ToString());
-            }
-            else
-            {
-                _currentSaveId = _saveIOService.LastSavedId;
-                LoadSaveInternal(_currentSaveId);
-            }
+            if (SaveGameIds.Count != 0)
+                _currentSaveId = LastSavedId;
         }
 
         public void SaveCurrentSave()
@@ -29,28 +24,47 @@ namespace SimpleSaveSystem.Core
             _saveIOService.TrySave(_currentSaveId, SaveData);
         }
 
-        public void LoadSave(string id)
+        public void LoadSave(string saveId)
         {
-            SaveCurrentSave();
-            LoadSaveInternal(id);
+            LoadSaveInternal(saveId);
         }
 
-        public void CreateSave()
+        public void CreateNewSave(string saveId)
         {
-            SaveCurrentSave();
-            LoadCreateSave(SaveGameIds.Count.ToString());
+            if(!string.IsNullOrEmpty(saveId) && !SaveGameIds.Contains(saveId))
+                LoadCreateSave(saveId);
+            else 
+                Debug.LogError( String.Format( SaveErrorMessage.SaveIdAlreadyExists, saveId));
         }
 
-        private void LoadCreateSave(string id)
+        public DateTime GetLastModifiedSaveDate(string saveId)
         {
-            if (_saveIOService.TryLoadCreate(id, out var save))
+            return _saveIOService.GetLastModifiedSaveDate(saveId);
+        }
+
+        public string GetSaveVersion(string saveId)
+        {
+            return _saveIOService.GetSaveVersion(saveId);
+        }
+
+        public void CreateNewSave()
+        {
+            if(!string.IsNullOrEmpty(SaveGameIds.Count.ToString()) && !SaveGameIds.Contains(SaveGameIds.Count.ToString()))
+                LoadCreateSave(SaveGameIds.Count.ToString());
+            else 
+                Debug.LogError( String.Format( SaveErrorMessage.IncrementalIdNamingIssue, SaveGameIds.Count.ToString()));
+        }
+
+        private void LoadCreateSave(string saveId)
+        {
+            if (_saveIOService.TryLoadCreate(saveId, out var save))
             {
                 SaveData = save;
-                _currentSaveId = SaveGameIds[0];
+                _currentSaveId = saveId;
             }
             else
             {
-                Debug.LogError($"Save Error: Unable to create new savegame of id: {SaveGameIds.Count.ToString()}");
+                Debug.LogError(String.Format(SaveErrorMessage.LoadCreateCannotLoad, saveId));
             }
         }
 
@@ -59,10 +73,11 @@ namespace SimpleSaveSystem.Core
             if(_saveIOService.TryLoad(saveId, out var save))
             {
                 SaveData = save;
+                _currentSaveId = saveId;
             }
             else
             {
-                Debug.LogError($"Save Error: Unable to load new savegame of id: {_currentSaveId}");
+                Debug.LogError(String.Format(SaveErrorMessage.GenericCannotLoadSave, saveId));
             }
         }
     }

@@ -1,0 +1,22 @@
+{
+  "name": "com.urkidi.simplesavesystem.defaults",
+  "version": "1.0.0",
+  "displayName": "Simple Save System",
+  "description": "Simple save system defaults, for easier implementation",
+  "unity": "6000.2",
+  "keywords": [
+    "save",
+    "savesystem",
+    "saving",
+    "default",
+    "defaults",
+    "implementation"
+  ],
+  "dependencies": {
+    "com.urkidi.simplesavesystem.core": "1.0.0"
+  },
+  "author": {
+    "name": "Unai Urkidi",
+    "url": "https://github.com/urkidi"
+  }
+}

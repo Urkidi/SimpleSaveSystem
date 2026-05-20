@@ -13,13 +13,25 @@ namespace SimpleSaveSystem.Example
         private SaveSystem<MainSavegame> _saveSystem;
         private MainSavegame _mainSave;
 
+        private static string Prefs_EncryptionKey = "Save_Key";
+
+        [SerializeField]
+        [Tooltip("This key must have exactly 32 Characters")]
+        private string _encryptionKey;
         [SerializeField]
         private TextMeshProUGUI _dataText;
-
+        [SerializeField]
+        private TMP_InputField _saveNewInputText;
+        [SerializeField]
+        private TMP_Dropdown _loadDropdown;
+        
         private SaveDefaultProvider _defaultSaveProvider;
+        private int _selectedDropdownItem;
 
         private void Awake()
         {
+            SaveKeyInPlayerPrefs();
+            
             _mainSave = new MainSavegame()
             {
                 Name = "ExampleSave",
@@ -53,7 +65,7 @@ namespace SimpleSaveSystem.Example
             };
             var dataRW = new LocalDataReadWriter();
             var serializationService = new JsonSerializationService();
-            var encryptionService = new AesEncryptionService(new DefaultKeyProvider());
+            var encryptionService = new AesEncryptionService(new PlayerPrefsKeyProvider(Prefs_EncryptionKey)); 
             var hashService = new Sha256HashService();
             var uriProvider = new DefaultPathProvider();
             var versionProvider = new SaveVersionProvider();
@@ -61,16 +73,47 @@ namespace SimpleSaveSystem.Example
             
             var saveService = new SaveIOService<MainSavegame>(dataRW, dataRW,serializationService,encryptionService,hashService, uriProvider, versionProvider, _defaultSaveProvider);
             _saveSystem = new SaveSystem<MainSavegame>(saveService);
+
+            Load();
+            
+            if(_loadDropdown != null)
+            {
+                _loadDropdown.ClearOptions();
+                _loadDropdown.AddOptions(_saveSystem.SaveGameIds);
+                _loadDropdown.onValueChanged.AddListener(UpdateSelected);
+            }
+        }
+
+        private void SaveKeyInPlayerPrefs()
+        {
+            PlayerPrefs.SetString(Prefs_EncryptionKey, _encryptionKey);
+        }
+
+        private void UpdateSelected(int arg0)
+        {
+            _selectedDropdownItem = arg0;
         }
 
         public void Save()
         {
             _saveSystem.SaveCurrentSave();
         }
+        
+        public void CreateNewSave()
+        {
+            if(_saveNewInputText.text != string.Empty)
+                _saveSystem.CreateNewSave(_saveNewInputText.text);
+            else
+                _saveSystem.CreateNewSave();
+            
+            _loadDropdown.ClearOptions();
+            _loadDropdown.AddOptions(_saveSystem.SaveGameIds);
+            _loadDropdown.value = _saveSystem.SaveGameIds.Count - 1;
+        }
 
         public void Load()
         {
-           _saveSystem.LoadSave(_saveSystem.SaveGameIds[0]);
+           _saveSystem.LoadSave(_saveSystem.SaveGameIds[_selectedDropdownItem]);
             PrintSaveData();
         }
 
