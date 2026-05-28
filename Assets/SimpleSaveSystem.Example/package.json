@@ -1,7 +1,7 @@
 {
   "name": "com.urkidi.simplesavesystem.example",
   "version": "1.0.0",
-  "displayName": "Simple Save System",
+  "displayName": "Simple Save System Examples",
   "description": "Simple save system implementation example",
   "unity": "6000.2",
   "keywords": [
